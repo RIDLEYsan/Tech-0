@@ -1,0 +1,4 @@
+echo "pos-app/node_modules" >> .gitignore
+echo "pos-app/.next" >> .gitignore
+echo "pos-app/.env.local" >> .gitignore
+echo "fastapi-app/env" >> .gitignore
