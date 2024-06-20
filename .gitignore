@@ -6,3 +6,7 @@ pos-app/node_modules
 pos-app/.next
 pos-app/.env.local
 fastapi-app/env
+pos-app/node_modules
+pos-app/.next
+pos-app/.env.local
+fastapi-app/env
