@@ -1,0 +1,26 @@
+{
+  "name": "pos-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.19",
+    "axios": "^0.21.1",
+    "next": "latest",
+    "postcss": "^8.4.38",
+    "react": "latest",
+    "react-dom": "latest",
+    "tailwindcss": "^3.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.2",
+    "@types/react": "18.3.3",
+    "eslint": "latest",
+    "eslint-config-next": "latest"
+  }
+}
