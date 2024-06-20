@@ -2,3 +2,7 @@ echo "pos-app/node_modules" >> .gitignore
 echo "pos-app/.next" >> .gitignore
 echo "pos-app/.env.local" >> .gitignore
 echo "fastapi-app/env" >> .gitignore
+pos-app/node_modules
+pos-app/.next
+pos-app/.env.local
+fastapi-app/env
