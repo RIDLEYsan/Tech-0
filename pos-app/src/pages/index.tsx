@@ -1,8 +1,7 @@
-"use client";
-
 import React, { useState } from "react";
 import axios from "axios";
-import "../app/global.css"; // 正しいパスでインポート
+import "../styles/globals.css"; // 正しいCSSファイルのインポートパス
+import Layout from "./layout"; // 正しいlayout.tsxのインポートパス
 
 const Home: React.FC = () => {
   const [barcode, setBarcode] = useState("");
@@ -11,79 +10,92 @@ const Home: React.FC = () => {
 
   const fetchProduct = async () => {
     try {
-      console.log(`Fetching product for barcode: ${barcode}`); // Debug message
-      const response = await axios.get(`http://localhost:8000/api/products/${barcode}`, {
-        timeout: 10000, // タイムアウトを10秒に設定
-      });
-      console.log("Product fetched:", response.data); // Debug message
-
-      // 商品が存在しない場合の確認
-      if (!response.data || !response.data.name || !response.data.price) {
-        console.error("Product data is missing or incomplete");
-        setProduct(null);
-      } else {
+      const response = await axios.get(`http://localhost:8000/api/products/${barcode}`);
+      console.log("API Response:", response.data); // デバッグ用
+      if (response.data && response.data.name && response.data.price) {
         setProduct(response.data);
+      } else {
+        setProduct(null);
       }
     } catch (error) {
-      console.error("Error fetching product:", error);
-      setProduct(null); // Clear product information on error
+      console.error("API Error:", error); // デバッグ用
+      setProduct(null);
     }
   };
 
   const addProductToList = () => {
     if (product) {
-      console.log("Adding product to list:", product); // Debug message
       setPurchaseList([...purchaseList, product]);
       setProduct(null);
       setBarcode("");
     }
   };
 
-  const handlePurchase = () => {
-    console.log("Purchasing items:", purchaseList);
-    // 購入処理をここに追加
-    setPurchaseList([]);
+  const handlePurchase = async () => {
+    try {
+      const purchaseData = purchaseList.map((item) => ({
+        code: item.code,
+        quantity: 1, // quantityを適切に設定
+      }));
+      await axios.post("http://localhost:8000/api/purchase/", purchaseData);
+      setPurchaseList([]);
+    } catch (error) {
+      console.error("Purchase Error:", error);
+    }
   };
 
+  const totalPrice = purchaseList.reduce((total, item) => total + item.price, 0);
+
   return (
-    <main className="flex flex-col items-center justify-center p-6 min-h-screen bg-gray-100">
-      <div className="container">
-        <div className="flex mb-4">
-          <input value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder="商品コードを入力" className="flex-grow" />
-          <button onClick={fetchProduct} className="ml-2 button-blue">
+    <Layout>
+      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <div className="input-button-group mb-4">
+          <input value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder="商品コードを入力" className="p-2 border rounded" />
+          <button onClick={fetchProduct} className="button-blue">
             商品コード読み込み
           </button>
         </div>
-        {product && (
-          <div className="product-info border p-4 rounded bg-gray-50">
-            <div className="mb-2">
-              <p>商品名: {product.name}</p>
-            </div>
-            <div className="mb-2">
-              <p>価格: {product.price}円</p>
-            </div>
-            <button onClick={addProductToList} className="button-green">
+        {product ? (
+          <div className="product-info mb-4 p-4 border rounded bg-gray-50">
+            <p>商品名: {product.name}</p>
+            <p>価格: {product.price}円</p>
+            <button onClick={addProductToList} className="button-green w-full">
+              追加
+            </button>
+          </div>
+        ) : (
+          <div className="product-info mb-4 p-4 border rounded bg-gray-50">
+            <p>商品名: -</p>
+            <p>価格: -</p>
+            <button disabled className="button-green w-full">
               追加
             </button>
           </div>
         )}
         <h2 className="text-xl mb-2">購入リスト</h2>
-        <div className="purchase-list">
-          <ul className="list-disc pl-5">
-            {purchaseList.map((item, index) => (
-              <li key={index} className="purchase-item">
-                {item.name} x 1 - {item.price}円
-              </li>
-            ))}
-          </ul>
+        <div className="purchase-list mb-4 p-4 border rounded bg-gray-50" style={{ minHeight: "150px" }}>
+          {purchaseList.length > 0 ? (
+            <ul className="list-disc pl-5">
+              {purchaseList.map((item, index) => (
+                <li key={index} className="mt-2">
+                  {item.name} x 1 - {item.price}円
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>購入リストは空です</p>
+          )}
+        </div>
+        <div className="total-amount mb-4 p-4 border rounded bg-gray-50">
+          <p>合計金額: {totalPrice}円</p>
         </div>
         {purchaseList.length > 0 && (
-          <button onClick={handlePurchase} className="button-red mt-4">
+          <button onClick={handlePurchase} className="button-red w-full">
             購入
           </button>
         )}
       </div>
-    </main>
+    </Layout>
   );
 };
 

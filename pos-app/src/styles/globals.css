@@ -1,0 +1,150 @@
+/* globals.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f3f4f6;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+
+.input-button-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.input-button-group input {
+  flex: 1;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.input-button-group button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.input-button-group button:hover {
+  background-color: #0056b3;
+}
+
+.product-info {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.product-info p {
+  margin: 5px 0;
+}
+
+.button-green {
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-green:hover {
+  background-color: #218838;
+}
+
+.button-red {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-red:hover {
+  background-color: #c82333;
+}
+
+.purchase-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.purchase-list li {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.button-decrease,
+.button-increase {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-decrease:hover,
+.button-increase:hover {
+  background-color: #0056b3;
+}
+.purchase-list {
+  min-height: 200px; /* ここで購入リストの最小高さを設定 */
+}
+
+.button-decrease,
+.button-increase {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-decrease:hover,
+.button-increase:hover {
+  background-color: #0056b3;
+}
+
+.quantity-input {
+  width: 50px;
+  text-align: center;
+}
+
+.product-info {
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.purchase-list {
+  min-height: 300px;
+}

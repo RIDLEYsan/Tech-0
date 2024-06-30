@@ -12,51 +12,70 @@ config = {
     "user": "tech0gen7student",
     "password": "vY7JZNfU",
     "database": "pos_app_arai",
-    # 'client_flags': [mysql.connector.ClientFlag.SSL],
-    # 'ssl_ca': ssl_cert_path
+    "client_flags": [mysql.connector.ClientFlag.SSL],
+    "ssl_ca": ssl_cert_path,
 }
+
+# SQL script to create the tables
+sql_script = """
+CREATE DATABASE IF NOT EXISTS pos_app_arai;
+
+USE pos_app_arai;
+
+CREATE TABLE IF NOT EXISTS 商品マスタ (
+    PRD_ID INT AUTO_INCREMENT PRIMARY KEY,
+    CODE CHAR(13) UNIQUE NOT NULL,
+    NAME VARCHAR(50) NOT NULL,
+    PRICE INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS 取引 (
+    TRD_ID INT AUTO_INCREMENT PRIMARY KEY,
+    DATETIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    EMP_CD CHAR(10),
+    STORE_CD CHAR(5),
+    POS_NO CHAR(3),
+    TOTAL_AMT INT
+);
+
+CREATE TABLE IF NOT EXISTS 取引明細 (
+    TRD_ID INT,
+    DTL_ID INT AUTO_INCREMENT PRIMARY KEY,
+    PRD_ID INT,
+    PRD_CODE CHAR(13),
+    PRD_NAME VARCHAR(50),
+    PRD_PRICE INT,
+    FOREIGN KEY (TRD_ID) REFERENCES 取引(TRD_ID),
+    FOREIGN KEY (PRD_ID) REFERENCES 商品マスタ(PRD_ID)
+);
+"""
 
 # Construct connection string
 try:
     conn = mysql.connector.connect(**config)
     print("Connection established")
+
+    cursor = conn.cursor()
+    print("Cursor created")
+
+    # Execute the SQL script to create tables
+    for statement in sql_script.split(";"):
+        if statement.strip():
+            cursor.execute(statement)
+            print(f"Executed: {statement.strip()}")
+
+    # Commit and close the connection
+    conn.commit()
+    cursor.close()
+    conn.close()
+    print("Done.")
+
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
         print("Something is wrong with the user name or password")
     elif err.errno == errorcode.ER_BAD_DB_ERROR:
         print("Database does not exist")
     else:
-        print("erroe:", err)
+        print("Error:", err)
 else:
-    cursor = conn.cursor()
-    print("cursor")
-
-    # Drop previous table of same name if one exists
-    cursor.execute("DROP TABLE IF EXISTS inventory;")
-    print("Finished dropping table (if existed).")
-
-    # Create table
-    cursor.execute(
-        "CREATE TABLE inventory (id serial PRIMARY KEY, name VARCHAR(50), quantity INTEGER);"
-    )
-    print("Finished creating table.")
-
-    # Insert some data into table
-    cursor.execute(
-        "INSERT INTO inventory (name, quantity) VALUES (%s, %s);", ("banana", 150)
-    )
-    print("Inserted", cursor.rowcount, "row(s) of data.")
-    cursor.execute(
-        "INSERT INTO inventory (name, quantity) VALUES (%s, %s);", ("orange", 154)
-    )
-    print("Inserted", cursor.rowcount, "row(s) of data.")
-    cursor.execute(
-        "INSERT INTO inventory (name, quantity) VALUES (%s, %s);", ("apple", 100)
-    )
-    print("Inserted", cursor.rowcount, "row(s) of data.")
-
-    # Cleanup
-    conn.commit()
-    cursor.close()
-    conn.close()
-    print("Done.")
+    print("Connection closed")
