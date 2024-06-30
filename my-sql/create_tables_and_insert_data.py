@@ -8,9 +8,9 @@ ssl_cert_path = os.path.join(base_path, "DigiCertGlobalRootG2.crt.pem")
 
 # Obtain connection string information from the portal
 config = {
-    "host": "your-server-name.mysql.database.azure.com",  # 例: mydatabase.mysql.database.azure.com
-    "user": "your-username@your-server-name",  # 例: myuser@mydatabase
-    "password": "your-password",
+    "host": "tech0-db-step4-studentrdb-1.mysql.database.azure.com",
+    "user": "tech0gen7student",
+    "password": "vY7JZNfU",
     "database": "pos_app_arai",
     "client_flags": [mysql.connector.ClientFlag.SSL],
     "ssl_ca": ssl_cert_path,

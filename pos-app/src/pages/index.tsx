@@ -25,7 +25,13 @@ const Home: React.FC = () => {
 
   const addProductToList = () => {
     if (product) {
-      setPurchaseList([...purchaseList, product]);
+      const existingProduct = purchaseList.find((item) => item.code === product.code);
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+        setPurchaseList([...purchaseList]);
+      } else {
+        setPurchaseList([...purchaseList, { ...product, quantity: 1 }]);
+      }
       setProduct(null);
       setBarcode("");
     }
@@ -35,16 +41,34 @@ const Home: React.FC = () => {
     try {
       const purchaseData = purchaseList.map((item) => ({
         code: item.code,
-        quantity: 1, // quantityを適切に設定
+        quantity: item.quantity,
       }));
-      await axios.post("http://localhost:8000/api/purchase/", purchaseData);
+      const response = await axios.post("http://localhost:8000/api/purchase/", purchaseData);
+      alert(response.data.message);
       setPurchaseList([]);
     } catch (error) {
       console.error("Purchase Error:", error);
+      if (error.response) {
+        alert(`購入に失敗しました: ${error.response.data.detail}`);
+      } else {
+        alert("購入に失敗しました。");
+      }
     }
   };
 
-  const totalPrice = purchaseList.reduce((total, item) => total + item.price, 0);
+  const updateQuantity = (code: string, amount: number) => {
+    const updatedList = purchaseList
+      .map((item) => {
+        if (item.code === code) {
+          return { ...item, quantity: item.quantity + amount };
+        }
+        return item;
+      })
+      .filter((item) => item.quantity > 0);
+    setPurchaseList(updatedList);
+  };
+
+  const totalPrice = purchaseList.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
     <Layout>
@@ -78,7 +102,13 @@ const Home: React.FC = () => {
             <ul className="list-disc pl-5">
               {purchaseList.map((item, index) => (
                 <li key={index} className="mt-2">
-                  {item.name} x 1 - {item.price}円
+                  {item.name} x {item.quantity} - {item.price * item.quantity}円
+                  <button onClick={() => updateQuantity(item.code, -1)} className="button-red ml-2">
+                    -
+                  </button>
+                  <button onClick={() => updateQuantity(item.code, 1)} className="button-green ml-2">
+                    +
+                  </button>
                 </li>
               ))}
             </ul>
